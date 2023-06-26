@@ -1,10 +1,12 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using TMPro;
 
 public class Route : MonoBehaviour
 {
+<<<<<<< HEAD
     public bool IsClaimed { get; private set; }
     public Player ClaimingPlayer { get; private set; }
     [SerializeField] private GameObject playerCardDeck;
@@ -17,15 +19,50 @@ public class Route : MonoBehaviour
 
     private CardColor cardColour;
     private List<Card> cardsNeeded = new List<Card>();
+=======
+    public bool IsClaimed { get; set; }
+    public Player ClaimingPlayer { get; set; }
+    public string RequiredColor { get; set; }
+    public int RequiredColorCount { get; set; }
+    public GameObject routeBox;
+    public Routes routeData; // Reference to the Routes ScriptableObject
+    public DestinationTicket? destinationTicket;
+    public Button claimButton;
+>>>>>>> bcdbdd5e2f154b2a791e111c8432888a157ec867
 
-    // Implement any necessary properties or variables for the route
+    private void Start()
+    {
+        claimButton.onClick.AddListener(ClaimRoute);
+    }
 
     public void Claim(Player claimingPlayer)
     {
-        IsClaimed = true;
-        ClaimingPlayer = claimingPlayer;
+        if (IsClaimed)
+        {
+            Debug.Log("Route is already claimed.");
+            return;
+        }
 
-        // Implement any necessary actions or logic when the route is claimed
+        claimingPlayer.ClaimRoute(this);
+    }
+
+    public void ClaimRoute()
+    {
+        if (IsClaimed)
+        {
+            Debug.Log("Route is already claimed.");
+            return;
+        }
+
+        if (ClaimingPlayer != null && ClaimingPlayer.HasColorCards(RequiredColor, RequiredColorCount))
+        {
+            // Add your logic to handle claiming the route here
+            Debug.Log("Claiming the route from " + routeData.startCity + " to " + routeData.endCity);
+        }
+        else
+        {
+            Debug.Log("Not enough color cards to claim the route.");
+        }
     }
 
     public List<Card> GetCardsNeeded(Transform cardHolder)
@@ -157,6 +194,7 @@ public class Route : MonoBehaviour
     {
         // Implement the logic to update the UI for the claimed route
     }
+<<<<<<< HEAD
 
 
     public void claimRoute()
@@ -179,3 +217,6 @@ public class Route : MonoBehaviour
 
 
 }
+=======
+}
+>>>>>>> bcdbdd5e2f154b2a791e111c8432888a157ec867
