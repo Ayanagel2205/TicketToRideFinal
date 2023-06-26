@@ -1,10 +1,22 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.UI;
+using TMPro;
 
 public class Route : MonoBehaviour
 {
     public bool IsClaimed { get; private set; }
     public Player ClaimingPlayer { get; private set; }
+    [SerializeField] private GameObject playerCardDeck;
+    [SerializeField] private GameObject routeContainorObj;
+    [SerializeField] private GameObject trainContainorObj;
+    [SerializeField] private GameObject Error_Obj;
+    [SerializeField] private TMP_Text Error_Text;
+
+
+
+    private CardColor cardColour;
+    private List<Card> cardsNeeded = new List<Card>();
 
     // Implement any necessary properties or variables for the route
 
@@ -16,17 +28,154 @@ public class Route : MonoBehaviour
         // Implement any necessary actions or logic when the route is claimed
     }
 
-    public List<Card> GetCardsNeeded()
-    {
-        List<Card> cardsNeeded = new List<Card>();
+    public List<Card> GetCardsNeeded(Transform cardHolder)
+    {       
+
+        foreach (Transform card in cardHolder) {
+
+           
+            Sprite cardSprite = card.GetComponent<Sprite>();
+            Color spriteCardColour = card.GetComponent<Color>();
+            
+
+            if (card != null)
+            {
+                cardsNeeded.Add(new Card(checkColour(spriteCardColour),cardSprite));
+
+
+            }
+        
+        
+        }
+
+
 
         // Implement the logic to determine the cards needed to claim the route
 
         return cardsNeeded;
     }
 
+    public int countCardsSameColour(CardColor inCardColour,Color routeColour)
+    {
+        int correctColour = 0;
+
+        for (int check = 0; check < ClaimingPlayer.cardPrefab.transform.childCount; check++)
+        {
+
+            if (inCardColour.Equals(routeColour))
+            {
+
+                correctColour++;
+
+
+            }
+
+        }
+
+        return correctColour;
+
+    }
+
+    public void routeLength(int sameCards)
+    {
+        if (sameCards>= routeContainorObj.transform.childCount)
+        {
+            trainContainorObj.SetActive(true);
+
+
+        }
+        else
+        {
+            Error_Obj.SetActive(true);
+            Error_Text.text = $"Insufficient Like Cards";
+
+
+        }
+
+
+
+    }
+
+
+    public CardColor checkColour(Color chosenColour)
+    {
+       // CardColor cardcolours;
+        if (CardColor.Black.Equals(chosenColour))
+        {
+            return CardColor.Black;
+
+        }
+
+        else if (CardColor.Blue.Equals(chosenColour))
+        {
+
+            return CardColor.Black;
+        }
+        else if (CardColor.Green.Equals(chosenColour))
+        {
+            return cardColour = CardColor.Blue;
+
+        }
+        else if (CardColor.Grey.Equals(chosenColour))
+        {
+            return CardColor.Grey;
+
+        }
+        else if (CardColor.Orange.Equals(chosenColour))
+        {
+
+            return CardColor.Orange;
+        }
+        else if (CardColor.Pink.Equals(chosenColour))
+        {
+            return CardColor .Pink;
+
+        }
+        else if (CardColor.Red.Equals(chosenColour))
+         {
+            return CardColor.Red;
+
+        }
+        else if (CardColor.Yellow.Equals(chosenColour))
+        {
+            return CardColor.Yellow;
+
+        }
+        else if (CardColor.White.Equals(chosenColour))
+        {
+            return CardColor.White;
+
+        }else
+        { return CardColor.Locomotive; }
+
+       
+
+
+    }
+
     public void UpdateUI()
     {
         // Implement the logic to update the UI for the claimed route
     }
+
+
+    public void claimRoute()
+    {
+       int countedCards=0;
+        
+        GetCardsNeeded(playerCardDeck.transform);
+        for(int compare=0; compare< cardsNeeded.Count; compare++)
+        {
+          countedCards+= countCardsSameColour(cardsNeeded[compare].getCardColor(),routeContainorObj.GetComponentInChildren<SpriteRenderer>().color); 
+           
+        }
+        routeLength(countedCards);
+       
+
+
+
+    }
+
+
+
 }
